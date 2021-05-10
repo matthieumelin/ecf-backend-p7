@@ -39,9 +39,13 @@ if (isset($_POST["button_project_new"])) {
             $query = mysqli_query($connection, "INSERT INTO project(name, description) VALUES('$name', '$description')");
 
             if ($query) {
-                // TODO: deux jointures a mettre
-                $query_project_user = mysqli_query($connection, "SELECT project.id FROM project 
-                LEFT JOIN project_user ON project.id=project_user.project_id");
+                $result = mysqli_fetch_array($query, MYSQLI_ASSOC);
+                $project_id = $result["id"];
+                $query_project_user = mysqli_query($connection, "SELECT project.id
+                FROM project
+                LEFT JOIN project_user AS pu ON pu.project_id=project.id
+                LEFT JOIN project ON project.id=pu.project_id
+                WHERE pu.project_id='$project_id'");
 
                 echo "Projet créer avec succès.";
             }
