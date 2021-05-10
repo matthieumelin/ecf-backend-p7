@@ -1,27 +1,48 @@
 <?php
 
-session_start();
-
 include('connection.php');
 
+session_start();
+
 // user is not admin redirect to home page
-if ($_SESSION['role'] != 'ROLE_ADMIN') {
+if (!isset($_SESSION['logged']) && $_SESSION['role'] != 'ROLE_ADMIN') {
     header("Location: /");
     exit;
 }
+?>
+<!DOCTYPE html>
+<html lang="en">
 
-function listProjects()
-{
-    global $connection;
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des projets</title>
+</head>
 
-    // check user exist
-    $query = mysqli_query($connection, "SELECT * FROM project");
+<body>
+    <a href="/project/new">Créer un projet</a>
+    <h1>Liste des projets :</h1>
+    <ul>
+        <?php
+        global $connection;
 
-    while ($row = mysqli_fetch_assoc($query)) {
-        echo $row["id"] . " | ",
-        $row["name"] . " | ",
-        $row["description"] . " <br />\n";
-    }
-}
+        // check projects exists
+        $query = mysqli_query($connection, "SELECT * FROM project");
 
-listProjects();
+        while ($row = mysqli_fetch_assoc($query)) :
+        ?>
+            <li style="margin: 30px 0 0;"><?php echo $row["id"] . " | ",
+                                            $row["name"] . " | ",
+                                            $row["description"]; ?>
+                <a href="#">Voir</a>
+                <a href="#">Editer</a>
+                <a href="#">Supprimer</a>
+            </li>
+        <?php
+        endwhile;
+        ?>
+    </ul>
+</body>
+
+</html>

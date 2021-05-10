@@ -18,19 +18,33 @@ if (isset($_POST["button_project_new"])) {
     $description = $_POST["description"];
 
     // check credentials is not empty
-    if ($name && $description) {
+    if (isset($name) && isset($description) && !empty($_POST["user"])) {
         global $connection;
 
-        // check project exist
+        $user = $_POST["user"];
+
         $name = stripcslashes($name);
         $description = stripcslashes($description);
+
         $name = mysqli_real_escape_string($connection, $name);
         $description = mysqli_real_escape_string($connection, $description);
-        $query = mysqli_query($connection, "INSERT INTO project(name, description) VALUES('$name', '$description')");
-        $result = mysqli_fetch_array($query, MYSQLI_ASSOC);
 
-        if ($result) {
-            echo "Projet créer avec succès.";
+        // check project exist
+        $query_project_exist = mysqli_query($connection, "SELECT * FROM project WHERE name='$name'");
+        $row = mysqli_fetch_row($query_project_exist);
+
+        // project don't exist
+        if ($row == 0) {
+            // create project
+            $query = mysqli_query($connection, "INSERT INTO project(name, description) VALUES('$name', '$description')");
+
+            if ($query) {
+                // TODO: deux jointures a mettre
+                $query_project_user = mysqli_query($connection, "SELECT project.id FROM project 
+                LEFT JOIN project_user ON project.id=project_user.project_id");
+
+                echo "Projet créer avec succès.";
+            }
         } else {
             echo "Projet déjà existant.";
         }
@@ -50,6 +64,7 @@ if (isset($_POST["button_project_new"])) {
 </head>
 
 <body>
+    <h1>Créer un projet :</h1>
     <form action="/project/new" method="post">
         <div style="margin: 10px 0 0; display: flex; flex-direction: column">
             <label for="name">Nom</label>
@@ -70,12 +85,12 @@ if (isset($_POST["button_project_new"])) {
         ?>
         <div style="margin: 10px 0 0;">
             Utilisateurs:
-            <?php while ($row = mysqli_fetch_assoc($query)) : ?>
+            <?php foreach ($query as $row) : ?>
                 <div style="margin: 5px 0 0; display: flex; align-items: center;">
-                    <input type="checkbox" name="user" id="user">
-                    <label for="user"><?php echo $row["firstname"] . $row["lastname"]; ?></label>
+                    <input type="checkbox" name="user[]" id="user[]" value="<?php echo $row["id"]; ?>">
+                    <label for="user"><?php echo $row["firstname"] . " " . $row["lastname"]; ?></label>
                 </div>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
         </div>
     </form>
 </body>
