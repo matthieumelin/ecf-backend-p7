@@ -32,6 +32,7 @@ if (isset($_POST["button_login"])) {
             if (password_verify($password, $result["password"])) {
                 // create user session
                 $_SESSION['logged'] = true;
+                $_SESSION['id'] = $result['id'];
                 $_SESSION['firstname'] = $result['firstname'];
                 $_SESSION['role'] = $result['roles'];
 

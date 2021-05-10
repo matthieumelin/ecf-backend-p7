@@ -39,13 +39,18 @@ if (isset($_POST["button_project_new"])) {
             $query = mysqli_query($connection, "INSERT INTO project(name, description) VALUES('$name', '$description')");
 
             if ($query) {
-                $result = mysqli_fetch_array($query, MYSQLI_ASSOC);
+                // check projet exist
+                $query_project_exist = mysqli_query($connection, "SELECT * FROM project WHERE name='$name'");
+                $result = mysqli_fetch_array($query_project_exist, MYSQLI_ASSOC);
                 $project_id = $result["id"];
-                $query_project_user = mysqli_query($connection, "SELECT project.id
-                FROM project
-                LEFT JOIN project_user AS pu ON pu.project_id=project.id
-                LEFT JOIN project ON project.id=pu.project_id
-                WHERE pu.project_id='$project_id'");
+
+                // loop all user id for insert into project_user
+                for ($i = 0; $i <= count($result); $i++) {
+                    if ($i === count($result)) break;
+                    
+                    $user_id = $user[$i];
+                    $query_project_user = mysqli_query($connection, "INSERT INTO project_user(project_id, user_id) VALUES('$project_id', '$user_id')");
+                }
 
                 echo "Projet créer avec succès.";
             }
@@ -91,8 +96,8 @@ if (isset($_POST["button_project_new"])) {
             Utilisateurs:
             <?php foreach ($query as $row) : ?>
                 <div style="margin: 5px 0 0; display: flex; align-items: center;">
-                    <input type="checkbox" name="user[]" id="user[]" value="<?php echo $row["id"]; ?>">
-                    <label for="user"><?php echo $row["firstname"] . " " . $row["lastname"]; ?></label>
+                    <input type="checkbox" name="user[]" id="user[]" value="<?= $row["id"]; ?>">
+                    <label for="user"><?= $row["firstname"] . " " . $row["lastname"]; ?></label>
                 </div>
             <?php endforeach; ?>
         </div>

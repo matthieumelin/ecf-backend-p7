@@ -14,7 +14,7 @@
     <?php
     if (isset($_SESSION['logged'])) {
     ?>
-        <h2>Bonjour, <?php echo $_SESSION['firstname']; ?>, voici le sommaire :</h2>
+        <h2>Bonjour, <?= $_SESSION['firstname']; ?>, voici le sommaire :</h2>
     <?php
     } else {
     ?>

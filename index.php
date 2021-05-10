@@ -7,13 +7,21 @@ if (isset($_GET["url"])) {
 }
 
 if ($url == "") {
-    require 'home.php';
+    require "home.php";
 } elseif ($url == "login") {
-    require 'login.php';
-} elseif ($url == "project") {
-    require 'project.php';
-} elseif ($url == "project/new") {
-    require 'project_new.php';
+    require "login.php";
 } elseif ($url == "logout") {
-    require 'logout.php'; 
+    require "logout.php";
+} elseif ($url == "project") {
+    require "project.php";
+} elseif ($url == "project/new") {
+    require "project_new.php";
+} elseif (preg_match("#project/([0-9]+)/edit#", $url, $params)) {
+    $idProject = $params[1];
+    require "project_edit.php";
+} elseif (preg_match("#project/([0-9]+)#", $url, $params)) {
+    $idProject = $params[1];
+    require "project_view.php";
+} else {
+    require "404.php";
 }

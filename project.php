@@ -32,11 +32,11 @@ if (!isset($_SESSION['logged']) && $_SESSION['role'] != 'ROLE_ADMIN') {
 
         while ($row = mysqli_fetch_assoc($query)) :
         ?>
-            <li style="margin: 30px 0 0;"><?php echo $row["id"] . " | ",
+            <li style="margin: 30px 0 0;"><?= $row["id"] . " | ",
                                             $row["name"] . " | ",
                                             $row["description"]; ?>
-                <a href="#">Voir</a>
-                <a href="#">Editer</a>
+                <a href="/project/<?= $row["id"] ?>">Voir</a>
+                <a href="#">Modifier</a>
                 <a href="#">Supprimer</a>
             </li>
         <?php
