@@ -3,8 +3,6 @@ session_start();
 
 include('connection.php');
 
-global $connection;
-
 // user is not admin redirect to home page
 if (!isset($_SESSION['logged']) && $_SESSION['role'] != 'ROLE_ADMIN') {
     header("Location: /");
